@@ -6,5 +6,5 @@ COPY ./src ./src
 COPY ./tsconfig.json ./
 COPY ecosystem.config.js ./
 RUN tsc
-EXPOSE 4577
-CMD ["pm2-runtime", "process.yml"]
+EXPOSE 17100
+CMD ["pm2-runtime", "./dist/app.js"]
