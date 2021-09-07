@@ -1,0 +1,22 @@
+version: '3'
+services:
+    proxer:
+        restart: unless-stopped
+        image: staticfloat/nginx-certbot
+        ports:
+            - "443:${INIT_ALTER}/tcp"
+        environment:
+            CERTBOT_EMAIL: ${INIT_EMAIL}
+            # variable names are space-separated
+            ENVSUBST_VARS: FQDN
+            FQDN: ${INIT_DOMAIN}
+        volumes:
+          - ./conf.d:/etc/nginx/user.conf.d:ro
+          - letsencrypt:/etc/letsencrypt
+    apper:
+        build:
+            context: .
+            dockerfile: ./dockerfile
+        restart: unless-stopped
+volumes:
+    letsencrypt:
