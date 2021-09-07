@@ -15,9 +15,30 @@
  * You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-import Config from "./Config";
-import Server from "./Server";
+ import * as express from "express";
+ import AddressRouter from "./routers/AddressRouter";
+ import { createServer as HttpCreate } from "http";
  
-Server
-    .listen(Config.port)
-    .on('listening', _=>console.log("IP Info Server Initialized"));
+ const ex = express();
+ 
+ ex
+     .use((q, s, n) => {
+         s.header('Access-Control-Allow-Origin', '*');
+         s.header('Access-Control-Allow-Methods', 'GET');
+         s.header('Access-Control-Allow-Headers', '*');
+         s.header('Access-Control-Allow-Credentials', 'true');
+         n();
+     })
+     .get('/robots.txt', (_req, res) => res
+         .status(200)
+         .type('text/plain')
+         .send('User-Agent: *\r\nDisallow: /')
+     )
+ 
+     .use('/address', AddressRouter)
+     .use('/addr', AddressRouter)
+     .use('/addrs', AddressRouter)
+ ;
+ 
+ const Server = HttpCreate(ex)
+    .listen(4577);
