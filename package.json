@@ -4,7 +4,6 @@
   "description": "REST Api, Server IP Address Information, Express.js, Node.js(TS4)",
   "main": "./dist/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "start": "node .",
     "debug": "tsc && node ."
