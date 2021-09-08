@@ -1,7 +1,7 @@
 {
   "name": "api-ip",
   "version": "0.1.0",
-  "description": "REST Api, Server IP Address Information, Express.js, Node.js(TS4)",
+  "description": "REST Api, Serve IP Address Information, Express.js, Node.js(TS4)",
   "main": "./dist/app.js",
   "scripts": {
     "build": "tsc",
