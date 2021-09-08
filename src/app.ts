@@ -15,30 +15,64 @@
  * You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- import * as express from "express";
- import AddressRouter from "./routers/AddressRouter";
- import { createServer as HttpCreate } from "http";
+import * as express from "express";
+import { createServer as HttpCreate } from "http";
+
+const ev_root = (req, res) => {
+    var ip     = req.socket.remoteAddress,
+        family = req.socket.remoteFamily,
+        port   = req.socket.remotePort;
+    
+    res
+        .status(200)
+
+    switch(req.params.rest?.toLowerCase?.()) {
+    case 'json':
+        res
+            .contentType('Application/json')
+            .send({
+                ip: ip,
+                family: family,
+                port: port
+            });
+        break;
+    case 'xml':
+        res
+            .contentType('text/xml')
+            .send(`<ipinfo><ip>${ip}</ip><family>${family}</family><port>${port}</port></ipinfo>`);
+    case 'text':
+    default:
+        res
+            .contentType('text/plain')
+            .send(`IP ADDRESS INFORMATION
+
+IP ADDRESS: ${ip}
+FAMILY:     ${family}
+PORT:       ${port}
+END`);
+        break;
+    }
+};
  
- const ex = express();
+const ex = express();
  
- ex
-     .use((q, s, n) => {
-         s.header('Access-Control-Allow-Origin', '*');
-         s.header('Access-Control-Allow-Methods', 'GET');
-         s.header('Access-Control-Allow-Headers', '*');
-         s.header('Access-Control-Allow-Credentials', 'true');
-         n();
-     })
-     .get('/robots.txt', (_req, res) => res
-         .status(200)
-         .type('text/plain')
-         .send('User-Agent: *\r\nDisallow: /')
-     )
- 
-     .use('/address', AddressRouter)
-     .use('/addr', AddressRouter)
-     .use('/addrs', AddressRouter)
- ;
- 
- const Server = HttpCreate(ex)
+ex
+    .use((q, s, n) => {
+        s.header('Access-Control-Allow-Origin', '*');
+        s.header('Access-Control-Allow-Methods', 'GET');
+        s.header('Access-Control-Allow-Headers', '*');
+        s.header('Access-Control-Allow-Credentials', 'true');
+        n();
+    })
+    .get('/robots.txt', (_req, res) => res
+        .status(200)
+        .type('text/plain')
+        .send('User-Agent: *\r\nDisallow: /')
+    )
+
+    .get('/', ev_root)
+    .get('/:rest', ev_root)
+;
+
+const Server = HttpCreate(ex)
     .listen(17100);
